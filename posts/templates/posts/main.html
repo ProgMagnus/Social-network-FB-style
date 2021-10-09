@@ -1,0 +1,167 @@
+{% extends 'base.html '%}
+
+{% load crispy_forms_tags %}
+
+{% block title%}
+Посты
+{% endblock title %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+	<div class="row">
+		<div class="col">
+		{% for obj in qs %}
+			<div class="card all-posts mb-3">
+				<div class="card-header">
+					<div class="float-end">
+						{% ifequal request.user obj.author.user %}
+						<a href="{% url 'post-update' obj.pk %}"><button class="btn btn-secondary ">Изменить</button></a>
+						<a href="{% url 'post-delete' obj.pk %}"><button class="btn btn-secondary ">Удалить</button></a>
+						{% endifequal %}
+					</div>
+					<img class="rounded-circle" src="{{ obj.author.avatar.url }}" height="40"> 
+					автор: {{ obj.author.user }} - опубликовано {{ obj.created|timesince}} назад
+				</div>
+				<div class="card-body">
+					{% if obj.image %}
+					<img src="{{ obj.image.url }}" height="300" class="rounded mx-auto d-block mb-2">
+					{% endif %}
+					{{ obj.content }}
+					<hr>
+				</div>
+			<div class="container-fluid">
+				<div class="float-end">
+					<form action="{% url 'like-post-view' %}" method="POST" class="like-form" id="{{ obj.id }}">
+						{% csrf_token %}
+						<input type="hidden" name="post_id" value="{{ obj.id }}">
+						<button class="btn btn-primary btn-like like-btn{{ obj.id }}  mb-2 me-2 bi bi-hand-thumbs-up" type="submit">
+							{% if profile not in obj.liked.all %}
+							&nbsp;Like
+							{% else %}
+							&nbsp;Unlike
+							{% endif %}
+						</button>
+						   <b class="float-end fs-4"><div class="like-count{{ obj.id }}">
+						    {{obj.num_likes}}
+						    </div></b>
+						    
+					</form>
+				</div>
+				<div>
+					<i class="bi bi-chat-left-dots"></i>
+					<span> {{ obj.num_comments }} количество коментариев</span>
+				</div>
+			</div>
+				<div class="card">
+					<div class="card-body">
+						<button class="cmt_btn btn btn-secondary">показать / скрыть комменатрии</button>
+					<div class="comment-box">
+						{% if obj.comment_set.all %}
+                    	{% for c in obj.comment_set.all %}
+                    	<div class="card mb-2 mt-2 all-comment">
+                    		<div class="card-body">
+                            <img class="rounded-circle" height="40" src="{{ c.user.avatar.url }}">
+                            <span>{{ c.user }}</span>
+                            <hr>
+                            <div class='mt-5'>{{ c.body }}</div>
+                        </div>
+                        </div>
+                        {% endfor %}
+                		{% endif %}
+                	</div>
+					</div>
+				</div>
+				<form action="" method="POST">
+					{% csrf_token %}
+					<input type="hidden" name="post_id" value="{{ obj.id }}">
+					<div class="container-fluid mt-2">
+					{{ c_form | crispy }}
+					<button type="submit" class="btn btn-primary btn-all mt-2 mb-1" name="submit_c_form">Отправить</button>
+					</div>
+				</form>
+			</div>
+		{% endfor %}
+		</div>
+		<div class="col-sm-4">
+			{% if post_added %}
+			<div class="alert alert-success" role="alert">
+  				Пост опубликован
+			</div>
+			{% endif %}
+			<div class="card">
+				<div class="card-body">
+					<h5 class="text-center">Опубликовать пост</h5>
+					<form action="" method="POST" enctype="multipart/form-data">
+						{% csrf_token %}
+						{{ p_form | crispy }}
+						<button type="submit" class="btn btn-primary btn-all mt-2" name="submit_p_form">Отправить</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+ 
+    <script>
+
+
+        $( document ).ready(function() {
+            let display = false
+            $(".cmt_btn").click(function () {
+                if (display===false) {
+                    $(this).next(".comment-box").show("slow");
+                    display=true
+                } else {
+                    $(this).next(".comment-box").hide("slow");
+                    display=false
+                }  
+            });
+
+            $('.like-form').submit(function(e){
+                e.preventDefault()
+                
+                const post_id = $(this).attr('id')
+                
+                const likeText = $(`.like-btn${post_id}`).text()
+                const trim = $.trim(likeText)
+
+                const url = $(this).attr('action')
+                
+                let res;
+                const likes = $(`.like-count${post_id}`).text()
+                const trimCount = parseInt(likes)
+                
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                        'post_id':post_id,
+                    },
+                    success: function(response) {
+                        if(trim === 'Unlike') {
+                            $(`.like-btn${post_id}`).text(' Like')
+                            res = trimCount - 1
+                        } else {
+                            $(`.like-btn${post_id}`).text(' Unlike')
+                            res = trimCount + 1
+                        }
+
+                        $(`.like-count${post_id}`).text(res)
+                    },
+                    error: function(response) {
+                        console.log('error', response)
+                    }
+                })
+
+            })
+        });
+    </script>
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html '%}
+
+{% block title%}
+Приглашенные друзья
+{% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-4">
+			{% if is_empty %}
+			NO!!
+			{% endif %}
+			<ul>
+				{% for item in qs %}
+					<li>{{ item }}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+
+
+{% endblock %}

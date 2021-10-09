@@ -1,0 +1,65 @@
+body {
+	background-color: #F8F8F8;
+}
+
+.nav-custom {
+	border-radius: 5px;
+	padding: 5px 0px 5px 0px;
+	background-color: #00008B;
+	margin-bottom: 7px;
+}
+
+.profile-info {
+	width: 500px;
+	margin-top: 0px;
+}
+
+.profile-pic {
+	margin-top: 24px;
+}
+
+.modal-custom {
+	top: 45px;
+}
+
+.btn-custom {
+	background-color: white !important;
+	text-align: left;
+	height: 50px;
+}
+
+.btn-like {
+	background-color: #00008B !important;
+}
+
+.btn-like:hover {
+	background-color: #0006b0 !important;
+	transform: scale(1.1);
+	transition: 0.5s;
+}
+
+.btn-like:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.card-header {
+	background-color: white;
+}
+
+.all-posts {
+	box-shadow: 0px 0px 20px 2px rgb(0, 0, 80);
+}
+
+.all-comment {
+	box-shadow: 0px 0px 1px 1px rgb(0, 0, 0);
+	max-width: 800px;
+}
+
+.comment-box {
+	display: none;
+}
+
+.btn-size {
+	width: 150px !important;
+}

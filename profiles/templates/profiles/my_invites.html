@@ -1,0 +1,47 @@
+{% extends 'base.html '%}
+
+{% block title%}
+Мои приглашения
+{% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid">
+	<div class="row justify-content-center">
+		<div class="col-md-8">
+			{% if is_empty %}
+			<h1 class="text-center">Нет ни одного приглашения!</h1>
+			{% endif %}
+			{% for obj in qs %}
+			<div class="card mb-2">
+				<div class="card-body">
+					<img class="rounded-circle float-start me-5" src="{{ obj.avatar.url }}" height="80">
+					<b>{{ obj.user }}</b>
+					<p>{{ obj.bio }}</p>
+					<a href="">
+						<button class="btn btn-primary btn-all">Посмотреть профиль</button>
+					</a>
+					<div class="float-end">
+					<form action="{% url 'accept-invite' %}" method="POST">
+						{% csrf_token %}
+						<input type="hidden" name="profile_pk" value="{{ obj.pk }}">
+					<button type="submit" class="btn btn-outline-success btn-size">Принять <i class="bi bi-check-lg"></i></button>
+					</form>
+					
+					<form action="{% url 'reject-invite' %}" method="POST">
+						{% csrf_token %}
+						<input type="hidden" name="profile_pk" value="{{ obj.pk }}">
+					<button type="submit" class="btn btn-outline-danger btn-size">Отклонить <i class="bi bi-x-lg"></i></button>
+					</form>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+
+
+
+{% endblock %}

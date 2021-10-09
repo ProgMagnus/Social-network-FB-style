@@ -1,0 +1,45 @@
+{% extends 'base.html '%}
+
+{% load crispy_forms_tags %}
+
+{% block title%}
+Ужадение поста
+{% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid mt-5">
+	<div class="row text-center">
+		<div class="col-sm-12">
+			{% if messages %}
+				{% for message in messages %}
+				{% if 'warning' in message.tags %}
+				<div class="alert alert-danger" role="alert">
+  				{{ message }}
+				</div>
+				{% endif %}
+				{% endfor %}
+			{% endif %}
+
+			{% if not messages %}
+			<h3>Удалить пост?</h3>
+			<form action="" method="POST" onsubmit="window.deleteconfirm()">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-danger">Удалить</button>
+			</form>
+			{% endif %}
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+	window.deleteconfirm = function() { 
+		var isValid = confirm('Вы уверены, что хотите удалить пост?');
+		if (!isValid) { 
+		event.preventDefault();  
+	}}
+</script>
+
+
+{% endblock%}

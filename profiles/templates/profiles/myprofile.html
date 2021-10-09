@@ -1,0 +1,136 @@
+{% extends 'base.html '%}
+
+{% load crispy_forms_tags %}
+
+{% block title%}
+Мой профиль
+{% endblock title %}
+
+{% block content %}
+
+
+  {% if confirm %}
+  <div class="alert alert-success" role="alert">Ваш профиль был изменен</div>
+  {% endif %}
+
+
+<div class="container-fluid">
+   <div class="row justify-content-center">
+    <div class="col-md-12">
+    <div tabindex="-1" class="btn btn-light btn-custom disabled placeholder col-12 mb-2" aria-hidden="true">
+      <strong class="fs-3">Профиль: {{request.user}}</strong>
+    </div>
+
+
+
+ 
+    <div class="card">
+    <div class="card-body">
+
+      <div class="float-start me-5">
+      <img class="rounded" src="{{ profile.avatar.url }}" width="308">
+        <!-- Button trigger modal -->
+      <div class="mt-3">
+        <button type="button" class="btn btn-dark mb-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <i class="bi bi-pencil-fill">Редактировать</i>
+      </button>
+      </div>
+      </div>
+
+      <div class="row mb-3">
+      <div class="card col-md-11 float-end ms-5">
+        <div class="card-body">
+          <div class="col-sm-11">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td>Логин:</td>
+                  <td>{{ profile.user }}</td>
+                </tr>
+                <tr>
+                  <td>Имя:</td>
+                  <td>{{ profile.first_name }}</td>
+                </tr>
+                <tr>
+                  <td>Фамилия:</td>
+                  <td>{{ profile.last_name }}</td>
+                </tr>
+                <tr>
+                  <td>О себе:</td>
+                  <td>{{ profile.bio }}</td>
+                </tr>
+                <tr>
+                  <td>Количество друзей:</td>
+                  <td>{{ profile.get_friends_no }}</td>
+                </tr>
+                <tr>
+                  <td>Список друзей:</td>
+                    <td>
+                      <ul>
+                      {% for friend in profile.get_friends %}
+                        <li>{{ friend }}</li>
+                        {% endfor %}
+                      </ul>
+                      </td>
+                  </tr>
+                <tr>
+                  <td>Количество постов:</td>
+                  <td>{{ profile.get_post_no }}</td>
+                </tr>
+                <tr>
+                  <td>Количество поставленных лайков:</td>
+                  <td>{{ profile.get_likes_given_no }}</td>
+                </tr>
+                <tr>
+                  <td>Количество полученных лайков:</td>
+                  <td>{{ profile.get_likes_received_no }}</td>
+                </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+          </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-custom ">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Внесите необходимые изменения</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-4 profile-pic"><img class="rounded" src="{{ profile.avatar.url }}"width='250'></div>
+
+            <div class="col-md-6 ms-2 profile-info">
+              <form action="" method="POST"  enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form | crispy }}
+            </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Отмена</button>
+ 
+        <button type="submit" class="btn btn-success">Сохранить изменения <i class="bi bi-check-lg"></i></button>
+        </form>
+
+      </div>
+      </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+
+{% endblock %}

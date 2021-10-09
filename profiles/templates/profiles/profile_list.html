@@ -1,0 +1,57 @@
+{% extends 'base.html '%}
+
+{% load crispy_forms_tags %}
+
+{% block title%}
+Все профили
+{% endblock title %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+	<div class="row justify-content-center">
+		<div class="col-md-8">
+			{% if is_empty %}
+			<h1 class="text-center">Нет ни одного профиля!</h1>
+			{% endif %}
+			{% for obj in object_list %}
+			<div class="card mb-2">
+				<div class="card-body">
+					<img class="rounded-circle float-start me-5" src="{{ obj.avatar.url }}" height="80">
+					<b>{{ obj.user }}</b>
+					<p>{{ obj.bio }}</p>
+					<a href="{{ obj.get_absolute_url }}"><button class="btn btn-primary btn-all">Посмотреть профиль</button></a>
+				<div class="float-end">
+					{% if obj.user not in rel_receiver and obj.user not in rel_sender %}
+					<form action="{% url 'send-invite' %}" method="POST">
+						{% csrf_token %}
+						<input type="hidden" name="profile_pk" value={{obj.pk}}>
+						<button type="submit" class="btn btn-outline-success">Добавить в друзья <i class="bi bi-person-check"></i></button>
+					</form>
+					{% endif %}
+
+					{% if request.user in obj.friends.all %}
+					<form action="{% url 'remove-friend' %}" method="POST">
+						{% csrf_token %}
+						<input type="hidden" name="profile_pk" value="{{ obj.pk }}">
+						<button type="submit" class="btn btn-outline-danger">Удалить из друзей <i class="bi bi-person-x"></i></button>
+					</form>
+					{% endif %}
+					
+
+					{% if obj.user in rel_receiver and request.user not in obj.friends.all %}
+					<button class="btn btn-secondary disabled">Ожидает подтверждения <i class="bi bi-three-dots"></i></button>
+					{% endif %}
+				</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+
+
+
+{% endblock %}
